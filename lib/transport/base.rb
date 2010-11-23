@@ -3,11 +3,7 @@ require 'net/http'
 
 module Transport
 
-  module Request
-
-    autoload :Builder, File.join(File.dirname(__FILE__), "request", "builder")
-
-  end
+  autoload :Request, File.join(File.dirname(__FILE__), "request")
 
   # Common transport layer for http transfers.
   class Base

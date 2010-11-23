@@ -1,10 +1,13 @@
 require 'rubygems'
+
 gem 'rspec'
-gem 'reek'
 require 'rspec'
-require 'rake/rdoctask'
 require 'rspec/core/rake_task'
+
+gem 'reek'
 require 'reek/rake/task'
+
+require 'rake/rdoctask'
 
 task :default => :spec
 
