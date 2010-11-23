@@ -15,7 +15,7 @@ describe Transport::JSON do
         :body      => "test"
       }
 
-      @request_builder = Transport::Request::Builder.new @http_method, @url, @options
+      @request_builder = Transport::HTTP::Request::Builder.new @http_method, @url, @options
 
       @response = Object.new
       @response.stub!(:code).and_return("200")
@@ -28,7 +28,7 @@ describe Transport::JSON do
     end
 
     it "should initialize the correct request object" do
-      Transport::Request::Builder.should_receive(:new).with(
+      Transport::HTTP::Request::Builder.should_receive(:new).with(
         @http_method, @url, hash_including(:headers => { "Accept" => "application/json", "Content-Type" => "application/json" })
       ).and_return(@request_builder)
       do_request

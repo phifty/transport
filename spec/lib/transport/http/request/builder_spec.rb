@@ -1,13 +1,13 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "spec_helper"))
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "..", "lib", "transport", "request", "builder"))
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "..", "spec_helper"))
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "..", "..", "lib", "transport", "http", "request", "builder"))
 
-describe Transport::Request::Builder do
+describe Transport::HTTP::Request::Builder do
 
   before :each do
-    @builder = Transport::Request::Builder.new :get,
-                                               "http://localhost:5984/test",
-                                               :headers    => { "Test-Header" => "test" },
-                                               :parameters => { "test_parameter" => "test" }
+    @builder = Transport::HTTP::Request::Builder.new :get,
+                                                     "http://localhost:5984/test",
+                                                     :headers    => { "Test-Header" => "test" },
+                                                     :parameters => { "test_parameter" => "test" }
   end
 
   describe "uri" do
