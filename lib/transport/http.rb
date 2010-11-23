@@ -6,7 +6,7 @@ module Transport
   autoload :Request, File.join(File.dirname(__FILE__), "request")
 
   # Common transport layer for http transfers.
-  class Base
+  class HTTP
 
     attr_reader :response
 

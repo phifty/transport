@@ -1,7 +1,7 @@
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "spec_helper"))
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "lib", "transport", "base"))
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "lib", "transport", "http"))
 
-describe Transport::Base do
+describe Transport::HTTP do
 
   describe "request" do
 
@@ -19,7 +19,7 @@ describe Transport::Base do
     end
 
     def do_request(options = { })
-      Transport::Base.request @http_method, @url, @options.merge(options)
+      Transport::HTTP.request @http_method, @url, @options.merge(options)
     end
 
     it "should initialize the correct request builder" do

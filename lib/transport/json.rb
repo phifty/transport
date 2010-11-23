@@ -1,10 +1,10 @@
 require 'json'
-require File.join(File.dirname(__FILE__), "base")
+require File.join(File.dirname(__FILE__), "http")
 
 module Transport
 
   # Extended transport layer for http transfers. Basic authorization and JSON transfers are supported.
-  class JSON < Base
+  class JSON < HTTP
 
     attr_reader :expected_status_code
     attr_reader :auth_type
