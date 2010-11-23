@@ -7,15 +7,17 @@ describe Transport::HTTP do
 
     before :each do
       @http_method = :get
-      @url = "http://localhost:5984/"
+      @url = "http://host:1234/"
       @options = { }
 
-      @request_builder = Transport::Request::Builder.new @http_method, @url, @options
+      @uri = mock URI, :host => "host", :port => 1234
+      @request = mock Net::HTTPRequest
 
-      @response = Object.new
-      @response.stub!(:code).and_return("200")
-      @response.stub!(:body).and_return("test")
-      Net::HTTP.stub!(:start).and_return(@response)
+      @request_builder = mock Transport::Request::Builder, :uri => @uri, :request => @request
+      Transport::Request::Builder.stub(:new).and_return(@request_builder)
+
+      @response = mock Net::HTTPResponse, :code => "200", :body => "test"
+      Net::HTTP.stub(:start).and_return(@response)
     end
 
     def do_request(options = { })

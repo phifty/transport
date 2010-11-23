@@ -1,4 +1,3 @@
-require 'uri'
 require 'net/http'
 
 module Transport
@@ -12,8 +11,7 @@ module Transport
 
     def initialize(http_method, url, options = { })
       @request_builder = Request::Builder.new http_method, url, options
-      @uri             = @request_builder.uri
-      @request         = @request_builder.request
+      @uri, @request = @request_builder.uri, @request_builder.request
 
       @expected_status_code = options[:expected_status_code]
     end
@@ -39,9 +37,9 @@ module Transport
 
     def check_status_code
       return unless @expected_status_code
-      response_code = @response.code
+      response_code = @response.code.to_i
       response_body = @response.body
-      raise UnexpectedStatusCodeError.new(response_code.to_i, response_body) if @expected_status_code.to_s != response_code
+      raise UnexpectedStatusCodeError.new(response_code, response_body) if @expected_status_code.to_i != response_code
     end
 
   end
