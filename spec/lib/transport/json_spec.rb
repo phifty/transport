@@ -3,50 +3,54 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "li
 
 describe Transport::JSON do
 
-  describe "request" do
+  before :each do
+    @uri = mock URI
+    @request = mock Net::HTTPRequest
+    @options = { }
+
+    @http_response = mock Net::HTTPResponse
+
+    @http_transport = mock Transport::HTTP, :perform => nil, :response => @http_response
+    Transport::HTTP.stub(:new).and_return(@http_transport)
+
+    @response_parser = mock described_class::ResponseParser, :perform => nil, :result => :test_response
+    described_class::ResponseParser.stub(:new).and_return(@response_parser)
+
+    @transport = described_class.new @uri, @request, @options
+  end
+
+  describe "perform" do
+
+    it "should initialize the http transport" do
+      Transport::HTTP.should_receive(:new).with(@request, @options).and_return(@http_transport)
+      @transport.perform
+    end
+
+    it "should perform the http transport" do
+      @http_transport.should_receive(:perform)
+      @transport.perform
+    end
+
+    it "should initialize the response parser" do
+      described_class::ResponseParser.should_receive(:new).with(@http_response).and_return(@response_parser)
+      @transport.perform
+    end
+
+    it "should perform the response parse" do
+      @response_parser.should_receive(:perform)
+      @transport.perform
+    end
+
+  end
+
+  describe "response" do
 
     before :each do
-      @http_method = :get
-      @url = "http://localhost:5984/"
-      @options = {
-        :auth_type => :basic,
-        :username  => "test",
-        :password  => "test",
-        :body      => "test"
-      }
-
-      @request_builder = Transport::HTTP::Request::Builder.new @http_method, @url, @options
-
-      @response = Object.new
-      @response.stub!(:code).and_return("200")
-      @response.stub!(:body).and_return("{\"test\":\"test\"}")
-      Net::HTTP.stub!(:start).and_return(@response)
+      @transport.perform
     end
 
-    def do_request(options = { })
-      Transport::JSON.request @http_method, @url, @options.merge(options)
-    end
-
-    it "should initialize the correct request object" do
-      Transport::HTTP::Request::Builder.should_receive(:new).with(
-        @http_method, @url, hash_including(:headers => { "Accept" => "application/json", "Content-Type" => "application/json" })
-      ).and_return(@request_builder)
-      do_request
-    end
-
-    it "should perform the request" do
-      Net::HTTP.should_receive(:start).and_return(@response)
-      do_request
-    end
-
-    it "should return the parsed response" do
-      do_request.should == { "test" => "test" }
-    end
-
-    it "should raise NotImplementedError if the given auth_type is wrong" do
-      lambda do
-        do_request :auth_type => :invalid
-      end.should raise_error(NotImplementedError)
+    it "should return the response parser result" do
+      @transport.response.should == :test_response
     end
 
   end

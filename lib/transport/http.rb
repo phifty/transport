@@ -1,30 +1,18 @@
+require 'uri'
 require 'net/http'
 
 module Transport
 
-  autoload :Request, File.join(File.dirname(__FILE__), "request")
-
   # Common transport layer for http transfers.
   class HTTP
+    include Common
 
-    attr_reader :response
-
-    def initialize(http_method, url, options = { })
-      @request_builder = Request::Builder.new http_method, url, options
-      @uri, @request = @request_builder.uri, @request_builder.request
-
-      @expected_status_code = options[:expected_status_code]
-    end
+    autoload :RequestBuilder, File.join(File.dirname(__FILE__), "http", "request_builder")
+    autoload :ParameterSerializer, File.join(File.dirname(__FILE__), "http", "parameter_serializer")
 
     def perform
       perform_request
       check_status_code
-    end
-
-    def self.request(http_method, url, options = { })
-      transport = new http_method, url, options
-      transport.perform
-      transport.response
     end
 
     private
@@ -36,10 +24,11 @@ module Transport
     end
 
     def check_status_code
-      return unless @expected_status_code
+      expected_status_code = @options[:expected_status_code]
+      return unless expected_status_code
       response_code = @response.code.to_i
       response_body = @response.body
-      raise UnexpectedStatusCodeError.new(response_code, response_body) if @expected_status_code.to_i != response_code
+      raise UnexpectedStatusCodeError.new(response_code, response_body) if expected_status_code.to_i != response_code
     end
 
   end

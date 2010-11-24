@@ -3,45 +3,42 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "li
 
 describe Transport::HTTP do
 
-  describe "request" do
+  before :each do
+    @uri = mock URI, :host => "host", :port => 1234
+    @request = mock Net::HTTPRequest
+    @options = { }
 
-    before :each do
-      @http_method = :get
-      @url = "http://host:1234/"
-      @options = { }
+    @response = mock Net::HTTPResponse, :code => "200", :body => "test"
+    Net::HTTP.stub(:start).and_return(@response)
 
-      @uri = mock URI, :host => "host", :port => 1234
-      @request = mock Net::HTTPRequest
+    @transport = described_class.new @uri, @request, @options
+  end
 
-      @request_builder = mock Transport::HTTP::Request::Builder, :uri => @uri, :request => @request
-      Transport::HTTP::Request::Builder.stub(:new).and_return(@request_builder)
-
-      @response = mock Net::HTTPResponse, :code => "200", :body => "test"
-      Net::HTTP.stub(:start).and_return(@response)
-    end
-
-    def do_request(options = { })
-      Transport::HTTP.request @http_method, @url, @options.merge(options)
-    end
-
-    it "should initialize the correct request builder" do
-      Transport::HTTP::Request::Builder.should_receive(:new).with(@http_method, @url, @options).and_return(@request_builder)
-      do_request
-    end
+  describe "perform" do
 
     it "should perform the request" do
-      Net::HTTP.should_receive(:start).and_return(@response)
-      do_request
-    end
-
-    it "should return the response" do
-      do_request.body.should == "test"
+      Net::HTTP.should_receive(:start).with("host", 1234).and_return(@response)
+      @transport.perform
     end
 
     it "should raise UnexpectedStatusCodeError if responded status code is wrong" do
+      @transport.options.merge! :expected_status_code => 201
       lambda do
-        do_request :expected_status_code => 201
+        @transport.perform
       end.should raise_error(Transport::UnexpectedStatusCodeError)
+    end
+
+  end
+
+  describe "response" do
+
+    before :each do
+      @transport.perform
+    end
+
+    it "should return the response" do
+      @transport.perform
+      @transport.response.should == @response
     end
 
   end
