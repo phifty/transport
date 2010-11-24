@@ -40,3 +40,12 @@ desc "Run all specs in spec directory"
 RSpec::Core::RakeTask.new do |task|
   task.pattern = "spec/lib/**/*_spec.rb"
 end
+
+namespace :spec do
+
+  desc "Run all integration specs in spec/acceptance directory"
+  RSpec::Core::RakeTask.new(:acceptance) do |task|
+    task.pattern = "spec/acceptance/**/*_spec.rb"
+  end
+
+end

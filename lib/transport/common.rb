@@ -28,7 +28,7 @@ module Transport
     module ClassMethods
 
       def request(http_method, url, options = { })
-        uri, request = RequestBuilder.build http_method, url, options
+        uri, request = self::RequestBuilder.build http_method, url, options
         transport = new uri, request, options
         transport.perform
         transport.response

@@ -18,7 +18,7 @@ module Transport
     private
 
     def perform_http_transport
-      http_transport = HTTP.new @request, @options
+      http_transport = HTTP.new @uri, @request, @options
       http_transport.perform
       @http_response = http_transport.response
     end

@@ -72,6 +72,13 @@ describe Transport::HTTP::RequestBuilder do
           @request_builder.perform
         end
 
+        it "should add no query string if parameter serializer returns nil" do
+          @request_class.should_receive(:new).with("/test", @options[:headers]).and_return(@request)
+
+          @parameter_serializer.stub(:result).and_return(nil)
+          @request_builder.perform
+        end
+
         it "should not set the request body" do
           @request.should_not_receive(:body=)
           @request_builder.perform

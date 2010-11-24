@@ -22,7 +22,7 @@ describe Transport::JSON do
   describe "perform" do
 
     it "should initialize the http transport" do
-      Transport::HTTP.should_receive(:new).with(@request, @options).and_return(@http_transport)
+      Transport::HTTP.should_receive(:new).with(@uri, @request, @options).and_return(@http_transport)
       @transport.perform
     end
 
