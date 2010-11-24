@@ -8,7 +8,6 @@ module Transport
     include Common
 
     autoload :RequestBuilder, File.join(File.dirname(__FILE__), "http", "request_builder")
-    autoload :ParameterSerializer, File.join(File.dirname(__FILE__), "http", "parameter_serializer")
 
     def perform
       perform_request

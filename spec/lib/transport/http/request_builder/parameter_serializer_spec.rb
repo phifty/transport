@@ -1,7 +1,7 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "spec_helper"))
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "..", "lib", "transport", "http", "parameter_serializer"))
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "..", "spec_helper"))
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "..", "..", "lib", "transport", "http", "request_builder", "parameter_serializer"))
 
-describe Transport::HTTP::ParameterSerializer do
+describe Transport::HTTP::RequestBuilder::ParameterSerializer do
 
   it "should return nil on an empty parameter hash" do
     serializer = described_class.new

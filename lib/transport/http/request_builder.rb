@@ -9,6 +9,8 @@ module Transport
     class RequestBuilder
       include Common::RequestBuilder
 
+      autoload :ParameterSerializer, File.join(File.dirname(__FILE__), "request_builder", "parameter_serializer")
+
       HTTP_METHODS_WITH_PARAMETERS = [ :get, :delete ].freeze unless defined?(HTTP_METHODS_WITH_PARAMETERS)
       HTTP_METHODS_WITH_BODY       = [ :post, :put ].freeze unless defined?(HTTP_METHODS_WITH_BODY)
 

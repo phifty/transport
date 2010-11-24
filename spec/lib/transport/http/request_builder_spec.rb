@@ -9,8 +9,8 @@ describe Transport::HTTP::RequestBuilder do
       :headers => { "Test-Header" => "test" },
       :parameters => { "test_parameter" => "test" }
     }
-    @parameter_serializer = mock Transport::HTTP::ParameterSerializer, :perform => nil, :result => "test_parameter=test"
-    Transport::HTTP::ParameterSerializer.stub(:new).and_return(@parameter_serializer)
+    @parameter_serializer = mock described_class::ParameterSerializer, :perform => nil, :result => "test_parameter=test"
+    described_class::ParameterSerializer.stub(:new).and_return(@parameter_serializer)
   end
 
   def mock_request(http_method)
@@ -22,7 +22,7 @@ describe Transport::HTTP::RequestBuilder do
   shared_examples_for "any http request builder perform" do
 
     it "should initialize the parameter serializer correctly" do
-      Transport::HTTP::ParameterSerializer.should_receive(:new).with(@options[:parameters]).and_return(@parameter_serializer)
+      described_class::ParameterSerializer.should_receive(:new).with(@options[:parameters]).and_return(@parameter_serializer)
       @request_builder.perform
     end
 
