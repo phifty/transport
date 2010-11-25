@@ -33,9 +33,10 @@ module Transport
       end
 
       def initialize_request_path
-        uri = URI.parse(@url =~ /\/$/ ? @url : "#{@url}/")
+        uri = URI.parse @url
         generate_query
         @request_path = uri.path
+        @request_path += "/" if @request_path == ""
         @request_path += "?" + @query if HTTP_METHODS_WITH_PARAMETERS.include?(@http_method.to_sym) && @query
       end
 
