@@ -2,8 +2,10 @@ require 'json'
 
 module Transport
 
+  # Transport layer for json transfers.
   class JSON
 
+    # Parser for the json response.
     class ResponseParser
 
       attr_reader :result

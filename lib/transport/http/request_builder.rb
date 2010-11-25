@@ -3,9 +3,10 @@ require 'net/http'
 
 module Transport
 
+  # Common transport layer for http transfers.
   class HTTP
 
-    # Builder for the transport layer requests
+    # Builder for the http transport layer requests.
     class RequestBuilder
       include Common::RequestBuilder
 

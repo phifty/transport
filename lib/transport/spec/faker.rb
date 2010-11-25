@@ -4,8 +4,10 @@ module Transport
 
   module Spec
 
+    # Spec helper class to fake http and json request.
     class Faker
 
+      # This error is raised if no fake request is found for the call.
       class NoFakeRequestError < StandardError; end
 
       def initialize(transport_class, fakes)
@@ -22,31 +24,37 @@ module Transport
 
       def request(http_method, url, options = { })
         parameters, headers, expected_status_code = options.values_at :parameters, :headers, :expected_status_code
-
-        request = find_fake_request http_method, url, parameters, headers
-
-        raise NoFakeRequestError, "no fake request found for [#{http_method} #{url} #{parameters.inspect} #{headers.inspect}]" unless request
-        raise self.class.unexpected_status_code_error_class.new(
-          request[:response][:code].to_i,
-          request[:response][:body]
-        ) if expected_status_code && expected_status_code.to_s != request[:response][:code]
-
-        request[:response][:body].dup
+        fake = find_fake :http_method => http_method, :url => url, :parameters => parameters, :headers => headers
+        response = fake[:response]
+        check_status_code response, expected_status_code
+        response[:body].dup
       end
 
-      def find_fake_request(http_method, url, parameters, headers)
-        @fakes.detect do |hash|
-          hash[:http_method].to_s == http_method.to_s &&
-            hash[:url].to_s == url.to_s &&
-            hash[:parameters] == parameters &&
-            hash[:headers] == headers
-        end
+      def check_status_code(response, expected_status_code)
+        response_code, response_body = response.values_at :code, :body
+        raise self.class.unexpected_status_code_error_class.new(
+          response_code.to_i,
+          response_body
+        ) if expected_status_code && expected_status_code.to_s != response_code
+      end
+
+      def find_fake(options)
+        fake = @fakes.detect{ |fake| self.class.fake_match? fake, options }
+        raise NoFakeRequestError, "no fake request found for [#{options[:http_method]} #{options[:url]} #{options[:parameters].inspect} #{options[:headers].inspect}]" unless fake
+        fake
+      end
+
+      def self.fake_match?(fake, options)
+        fake[:http_method].to_s == options[:http_method].to_s &&
+          fake[:url].to_s == options[:url].to_s &&
+          fake[:parameters] == options[:parameters] &&
+          fake[:headers] == options[:headers]
       end
 
       def self.fake!(type, filename)
-        @@fake ||= { }
-        @@fake[type] = YAML.load_file filename
-        faker = new transport_class(type), @@fake[type]
+        @fake ||= { }
+        @fake[type] = YAML.load_file filename
+        faker = new transport_class(type), @fake[type]
         faker.stub_request
       end
 

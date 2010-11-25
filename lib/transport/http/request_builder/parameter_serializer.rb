@@ -2,11 +2,13 @@ require 'cgi'
 
 module Transport
 
+  # Common transport layer for http transfers.
   class HTTP
 
+    # Builder for the transport layer requests.
     class RequestBuilder
 
-      # Serializer for transport http parameters
+      # Serializer for transport http parameters.
       class ParameterSerializer
 
         attr_reader :result

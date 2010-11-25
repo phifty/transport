@@ -1,8 +1,10 @@
 
 module Transport
 
+  # Transport layer for json transfers.
   class JSON
 
+    # Builder for the json transport layer requests.
     class RequestBuilder
       include Common::RequestBuilder
 

@@ -9,7 +9,13 @@ module Transport
       def self.included(base_class)
         base_class.class_eval do
           include InstanceMethods
-          extend ClassMethods
+
+          def self.build(*arguments)
+            request_builder = new *arguments
+            request_builder.perform
+            [ request_builder.uri, request_builder.request ]
+          end
+
         end
       end
 
@@ -23,16 +29,6 @@ module Transport
         def initialize(http_method, url, options = { })
           @http_method, @url, @options = http_method, url, options
           @uri = URI.parse @url
-        end
-
-      end
-
-      module ClassMethods
-
-        def build(*arguments)
-          request_builder = new *arguments
-          request_builder.perform
-          [ request_builder.uri, request_builder.request ]
         end
 
       end
