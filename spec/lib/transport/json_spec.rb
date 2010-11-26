@@ -8,7 +8,7 @@ describe Transport::JSON do
     @request = mock Net::HTTPRequest
     @options = { }
 
-    @http_response = mock Net::HTTPResponse
+    @http_response = "test_http_response"
 
     @http_transport = mock Transport::HTTP, :perform => nil, :response => @http_response
     Transport::HTTP.stub(:new).and_return(@http_transport)

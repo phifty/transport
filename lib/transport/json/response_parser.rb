@@ -21,8 +21,7 @@ module Transport
       private
 
       def parse_response_body
-        body = @http_response.body
-        @result = body ? ::JSON.parse(body) : nil
+        @result = @http_response ? ::JSON.parse(@http_response) : nil
       end
 
     end

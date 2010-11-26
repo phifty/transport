@@ -36,9 +36,9 @@ describe Transport::HTTP do
       @transport.perform
     end
 
-    it "should return the response" do
+    it "should return the response body" do
       @transport.perform
-      @transport.response.should == @response
+      @transport.response.should == "test"
     end
 
   end

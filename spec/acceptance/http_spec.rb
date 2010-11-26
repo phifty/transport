@@ -4,8 +4,7 @@ describe "fetching the google start page" do
 
   it "should return some html" do
     response = Transport::HTTP.request :get, "http://www.google.de"
-    response.should be_instance_of(Net::HTTPOK)
-    response.body.should_not be_nil
+    response.should_not be_nil
   end
 
 end

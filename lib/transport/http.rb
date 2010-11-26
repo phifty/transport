@@ -17,16 +17,17 @@ module Transport
     private
 
     def perform_request
-      @response = Net::HTTP.start(@uri.host, @uri.port) do |connection|
+      @http_response = Net::HTTP.start(@uri.host, @uri.port) do |connection|
         connection.request @request
       end
+      @response = @http_response.body
     end
 
     def check_status_code
       expected_status_code = @options[:expected_status_code]
       return unless expected_status_code
-      response_code = @response.code.to_i
-      response_body = @response.body
+      response_code = @http_response.code.to_i
+      response_body = @http_response.body
       raise UnexpectedStatusCodeError.new(response_code, response_body) if expected_status_code.to_i != response_code
     end
 
