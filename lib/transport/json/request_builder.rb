@@ -1,3 +1,4 @@
+require 'json'
 
 module Transport
 
@@ -27,7 +28,7 @@ module Transport
       end
 
       def convert_parameters_to_json
-        return if HTTP_METHODS_WITH_PARAMETERS.include?(@http_method.to_sym)
+        return unless @options[:encode_parameters]
         parameters = @options[:parameters]
         if parameters
           parameters.each do |key, value|

@@ -4,9 +4,9 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "..
 describe Transport::JSON::RequestBuilder do
 
   before :each do
-    @http_method = :post
+    @http_method = :get
     @url = "test_url"
-    @options = { }
+    @options = { :encode_parameters => true }
 
     @request = mock Net::HTTP::Get
 
@@ -42,7 +42,7 @@ describe Transport::JSON::RequestBuilder do
       @request_builder.perform
     end
 
-    it "should convert the parameters to json if given" do
+    it "should convert the parameters to json if requested" do
       Transport::HTTP::RequestBuilder.should_receive(:new).with(
         @http_method,
         @url,
@@ -54,21 +54,6 @@ describe Transport::JSON::RequestBuilder do
 
       @request_builder.options.merge! :parameters => { "test_parameter" => "test" }
       @request_builder.perform
-    end
-
-    it "should not convert the parameters to json if http method is get or delete" do
-      Transport::HTTP::RequestBuilder.should_receive(:new).with(
-        :get,
-        @url,
-        @options.merge(
-          :headers => { "Accept" => "application/json" },
-          :parameters => { "test_parameter" => "test" }
-        )
-      ).and_return(@http_request_builder)
-
-      request_builder = described_class.new :get, @url, @options
-      request_builder.options.merge! :parameters => { "test_parameter" => "test" }
-      request_builder.perform
     end
 
     it "should perform a http request build" do
