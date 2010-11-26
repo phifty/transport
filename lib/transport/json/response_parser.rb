@@ -22,6 +22,8 @@ module Transport
 
       def parse_response_body
         @result = @http_response ? ::JSON.parse(@http_response) : nil
+      rescue ::JSON::ParserError => error
+        raise ParserError, error.to_s
       end
 
     end

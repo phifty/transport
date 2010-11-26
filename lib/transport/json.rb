@@ -10,6 +10,9 @@ module Transport
     autoload :RequestBuilder, File.join(File.dirname(__FILE__), "json", "request_builder")
     autoload :ResponseParser, File.join(File.dirname(__FILE__), "json", "response_parser")
 
+    # ParserError will be raised if the response parser couldn't process the http response.
+    class ParserError < StandardError; end
+
     def perform
       perform_http_transport
       parse_response

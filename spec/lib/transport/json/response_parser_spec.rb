@@ -22,6 +22,13 @@ describe Transport::JSON::ResponseParser do
       response_parser.result.should be_nil
     end
 
+    it "should raise a #{Transport::JSON::ParserError} if a #{JSON::ParserError} is raised" do
+      JSON.stub(:parse).and_raise(JSON::ParserError)
+      lambda do
+        @response_parser.perform
+      end.should raise_error(Transport::JSON::ParserError)
+    end
+
   end
 
   describe "result" do
