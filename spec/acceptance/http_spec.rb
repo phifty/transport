@@ -8,3 +8,12 @@ describe "fetching the google start page" do
   end
 
 end
+
+describe "fetch a search query result from google" do
+
+  it "should return some html" do
+    response = Transport::HTTP.request :get, "http://www.google.de/search", :parameters => { "q" => "transport" }
+    response.should_not be_nil
+  end
+
+end

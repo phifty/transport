@@ -4,6 +4,105 @@
 A HTTP/JSON transport layer. Provides a single command interface to perform http/json requests. A spec helper to
 perform request against a fake server is also included.
 
+== HTTP requests
+
+To perform a http request the call of a single command is needed.
+
+  Transport::HTTP.request :get, "http://www.google.com", :expected_status_code => 200
+
+The method will return a string with the content of Google home page. If another status code is received than the
+expected one, an <tt>Transport::UnexpectedStatusCodeError</tt> will be raised. In that case, the status code can be
+read from the raised error object.
+
+  begin
+    Transport::HTTP.request :get, "http://www.google.com", :expected_status_code => 200
+  rescue Transport::UnexpectedStatusCodeError => error
+    puts "error code = #{error.status_code}"
+  end
+
+=== Parameters, headers and the request body
+
+Parameters and headers can also be passed to the request method.
+
+  Transport::HTTP.request :get, "http://www.somesite.com",
+    :parameters => { "test" => "test value" },
+    :headers => { "Accept" => "text/html", "Content-Type" => "application/x-www-form-urlencoded" }
+
+Before performing a GET or DELETE request, the given parameters will be encoded in the request url (e.g.
+<tt>?test=test%20value</tt>). POST and PUT request will transport the encoded parameters in their request body, unless
+a request body is explicitly specified.
+
+  Transport::HTTP.request :post, "http://www.somesite.com",
+    :headers => { "Accept" => "text/html", "Content-Type" => "text/html" },
+    :body => "<html>some data</html>"
+
+=== Authentication
+
+Currently, BASIC authentication is supported for requests. To enable it, simply pass the parameter <tt>auth_type</tt>
+along with <tt>username</tt> and <tt>password</tt> to the request method.
+
+  Transport::HTTP.request :get, "http://www.somesite.com",
+    :auth_type => :basic, :username => "user", :password => "pass"
+
+== JSON requests
+
+A JSON request is basically an extensions of a HTTP request. All options that are possible on HTTP request are also
+possible on JSON requests. But a few differences should be mentioned here.
+
+* The <tt>Accept</tt> header will be set to <tt>application/json</tt> anyway.
+* If a request body is specified, the <tt>Content-Type</tt> will also be set to <tt>application/json</tt> cause only
+  json data should be transferred.
+* All given parameters will be encoded to json, before encoded to the url. This makes it possible to transfer more
+  complex parameters like arrays and hashes.
+* The response body will also be parsed to json.
+
+=== Example
+
+  Transport::JSON.request :get, "http://www.somesite.com/content.json",
+    :auth_type => :basic, :username => "user", :password => "pass",
+    :parameters => { "filter" => { "date" => Date.today, "tags" => [ "gossip", "serious" ] } }
+
+This will perform an authenticated GET request to the given url and passes the json-encoded parameters.
+
+== Fake requests
+
+For test proposes, this gem also comes with the possibility of doing fake requests. If you want to test your code
+against a webservice, but don't want to dependent on a network connection or on the webservice itself - or just want
+to speed up your tests, you can fake the webservice by calling <tt>Transport::Spec::Faker.fake!</tt>.
+
+  describe "webservice" do
+
+    before :each do
+      Transport::Spec::Faker.fake! :json, "some_filename.yml"
+    end
+
+    ...
+
+  end
+
+The first parameter specifies, if <tt>:http</tt> or <tt>:json</tt> requests should be faked and second one provides a
+filename of the YML file that contains an array of all fake requests. The file should look like the following example.
+
+  -- # use a single dash here
+    :http_method: "get"
+    :url:         "http://www.somesite.com/content.json"
+    :response:
+      :code: 200
+      :body:
+        "test": "test value"
+  -- # use a single dash here
+    :http_method: "post"
+    :url:         "http://www.somesite.com"
+    :headers:
+      "Accept": "text/html"
+      "Content-Type": "text/html"
+    :response:
+      :code: 200
+      :body: "<html>test value</html>"
+
+Once the faker is activated, it will try to fake any request. If your software is trying to do a request that isn't
+defined in the YML file, it will raises a <tt>Transport::Spec::Faker::NoFakeRequestError</tt>.
+
 == Development
 
 This project is still experimental and under development. Any bug report and contribution is welcome!

@@ -33,7 +33,6 @@ desc "Generate the rdoc"
 Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.add [ "README.rdoc", "lib/**/*.rb" ]
   rdoc.main = "README.rdoc"
-  rdoc.title = ""
 end
 
 desc "Run all specs in spec directory"

@@ -14,7 +14,7 @@ module Transport
         @transport_class, @fakes = transport_class, fakes
       end
 
-      def stub_request
+      def stub_requests!
         @transport_class.stub(:request).and_return do |*arguments|
           request *arguments
         end
@@ -55,7 +55,7 @@ module Transport
         @fake ||= { }
         @fake[type] = YAML.load_file filename
         faker = new transport_class(type), @fake[type]
-        faker.stub_request
+        faker.stub_requests!
       end
 
       def self.transport_class(type)
