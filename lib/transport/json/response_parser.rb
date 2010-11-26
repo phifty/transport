@@ -21,7 +21,7 @@ module Transport
       private
 
       def parse_response_body
-        @result = @http_response ? ::JSON.parse(@http_response) : nil
+        @result = @http_response && @http_response.strip != "" ? ::JSON.parse(@http_response) : nil
       rescue ::JSON::ParserError => error
         raise ParserError, error.to_s
       end

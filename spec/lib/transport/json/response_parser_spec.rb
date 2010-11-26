@@ -22,6 +22,12 @@ describe Transport::JSON::ResponseParser do
       response_parser.result.should be_nil
     end
 
+    it "should set result to nil if http response is empty" do
+      response_parser = described_class.new " "
+      response_parser.perform
+      response_parser.result.should be_nil
+    end
+
     it "should raise a #{Transport::JSON::ParserError} if a #{JSON::ParserError} is raised" do
       JSON.stub(:parse).and_raise(JSON::ParserError)
       lambda do
