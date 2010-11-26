@@ -21,6 +21,9 @@ module Transport
 
       module InstanceMethods
 
+        HTTP_METHODS_WITH_PARAMETERS = [ :get, :delete ].freeze unless defined?(HTTP_METHODS_WITH_PARAMETERS)
+        HTTP_METHODS_WITH_BODY       = [ :post, :put ].freeze unless defined?(HTTP_METHODS_WITH_BODY)
+
         attr_reader :http_method
         attr_reader :url
         attr_reader :options
