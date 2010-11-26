@@ -1,4 +1,4 @@
-require 'json'
+require File.join(File.dirname(__FILE__), "common")
 require File.join(File.dirname(__FILE__), "http")
 
 module Transport
