@@ -22,7 +22,7 @@ module Transport
         private
 
         def request
-          "request: #{@request.path}\n" +
+          "request: #{@request.class} #{@request.path}\n" +
             request_headers +
             request_body
         end
