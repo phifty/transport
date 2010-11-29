@@ -8,9 +8,11 @@ module Transport
     include Common
 
     autoload :RequestBuilder, File.join(File.dirname(__FILE__), "http", "request_builder")
+    autoload :Formatter, File.join(File.dirname(__FILE__), "http", "formatter")
 
     def perform
       perform_request
+      log_transport
       check_status_code
     end
 
@@ -21,6 +23,11 @@ module Transport
         connection.request @request
       end
       @response = @http_response.body
+    end
+
+    def log_transport
+      @formatter ||= Formatter.new @options[:logger]
+      @formatter.log_transport @uri, @request, @http_response
     end
 
     def check_status_code
