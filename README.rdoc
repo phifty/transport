@@ -52,7 +52,7 @@ possible on JSON requests. But a few differences should be mentioned here.
 * The <tt>Accept</tt> header will be set to <tt>application/json</tt> anyway.
 * If a request body is specified, the <tt>Content-Type</tt> will also be set to <tt>application/json</tt> cause only
   json data should be transferred.
-* If the option <tt>encode_parameters</tt> is set the true, all parameters will be encoded to json, before encoded to
+* If the option <tt>encode_parameters</tt> is set to true, all parameters will be encoded to json, before encoded to
   the url. This makes it possible to transfer more complex parameters like arrays and hashes.
 * The response body will also be parsed to json.
 
@@ -106,4 +106,4 @@ defined in the YML file, it will raises a <tt>Transport::Spec::Faker::NoFakeRequ
 
 == Development
 
-This project is still experimental and under development. Any bug report and contribution is welcome!
+This project is still under development. Any bug report and contribution is welcome!
