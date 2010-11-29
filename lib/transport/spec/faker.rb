@@ -8,20 +8,31 @@ module Transport
     # Spec helper class to fake http and json request.
     class Faker
 
+      TRANSPORT_CLASSES = [
+        Transport::HTTP,
+        Transport::JSON
+      ].freeze unless defined?(TRANSPORT_CLASSES)
+
       # This error is raised if no fake request is found for the call.
       class NoFakeRequestError < StandardError; end
 
-      def initialize(transport_class, fakes)
-        @transport_class, @fakes = transport_class, fakes
+      def initialize(fakes)
+        @fakes = fakes
       end
 
       def stub_requests!
-        @transport_class.stub(:request).and_return do |*arguments|
-          request *arguments
+        TRANSPORT_CLASSES.each do |transport_class|
+          stub_requests_for_transport! transport_class
         end
       end
 
       private
+
+      def stub_requests_for_transport!(transport_class)
+        transport_class.stub(:request).and_return do |*arguments|
+          request *arguments
+        end
+      end
 
       def request(http_method, url, options = { })
         parameters, headers, expected_status_code = options.values_at :parameters, :headers, :expected_status_code
@@ -33,7 +44,7 @@ module Transport
 
       def check_status_code(response, expected_status_code)
         response_code, response_body = response.values_at :code, :body
-        raise self.class.unexpected_status_code_error_class.new(
+        raise Transport::UnexpectedStatusCodeError.new(
           response_code.to_i,
           response_body
         ) if expected_status_code && expected_status_code.to_s != response_code
@@ -52,29 +63,9 @@ module Transport
           fake[:headers] == options[:headers]
       end
 
-      def self.fake!(type, filename)
-        @fake ||= { }
-        @fake[type] = YAML.load_file filename
-        faker = new transport_class(type), @fake[type]
+      def self.fake!(filename)
+        faker = new YAML.load_file(filename)
         faker.stub_requests!
-      end
-
-      def self.transport_class(type)
-        send :"transport_#{type}_class"
-      rescue NoMethodError
-        raise NotImplementedError, "the transport type #{type} is not supported"
-      end
-
-      def self.transport_http_class
-        Transport::HTTP
-      end
-
-      def self.transport_json_class
-        Transport::JSON
-      end
-
-      def self.unexpected_status_code_error_class
-        Transport::UnexpectedStatusCodeError
       end
 
     end

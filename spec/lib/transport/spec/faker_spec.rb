@@ -25,6 +25,10 @@ describe Transport::Spec::Faker do
     @filename = "test_filename"
   end
 
+  def do_fake
+    described_class.fake! @filename
+  end
+
   shared_examples_for "any fake" do
 
     it "should load the yaml file" do
@@ -50,10 +54,6 @@ describe Transport::Spec::Faker do
 
   describe "fake an http transport" do
 
-    def do_fake
-      described_class.fake! :http, @filename
-    end
-
     def do_request(*arguments)
       Transport::HTTP.request *arguments
     end
@@ -69,10 +69,6 @@ describe Transport::Spec::Faker do
   end
 
   describe "fake an json transport" do
-
-    def do_fake
-      described_class.fake! :json, @filename
-    end
 
     def do_request(*arguments)
       Transport::JSON.request *arguments
