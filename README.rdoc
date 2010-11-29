@@ -52,15 +52,16 @@ possible on JSON requests. But a few differences should be mentioned here.
 * The <tt>Accept</tt> header will be set to <tt>application/json</tt> anyway.
 * If a request body is specified, the <tt>Content-Type</tt> will also be set to <tt>application/json</tt> cause only
   json data should be transferred.
-* All given parameters will be encoded to json, before encoded to the url. This makes it possible to transfer more
-  complex parameters like arrays and hashes.
+* If the option <tt>encode_parameters</tt> is set the true, all parameters will be encoded to json, before encoded to
+  the url. This makes it possible to transfer more complex parameters like arrays and hashes.
 * The response body will also be parsed to json.
 
 === Example
 
   Transport::JSON.request :get, "http://www.somesite.com/content.json",
     :auth_type => :basic, :username => "user", :password => "pass",
-    :parameters => { "filter" => { "date" => Date.today, "tags" => [ "gossip", "serious" ] } }
+    :parameters => { "filter" => { "date" => Date.today, "tags" => [ "gossip", "serious" ] } },
+    :encode_parameters => true
 
 This will perform an authenticated GET request to the given url and passes the json-encoded parameters.
 
@@ -73,15 +74,15 @@ to speed up your tests, you can fake the webservice by calling <tt>Transport::Sp
   describe "webservice" do
 
     before :each do
-      Transport::Spec::Faker.fake! :json, "some_filename.yml"
+      Transport::Spec::Faker.fake! "some_filename.yml"
     end
 
     ...
 
   end
 
-The first parameter specifies, if <tt>:http</tt> or <tt>:json</tt> requests should be faked and second one provides a
-filename of the YML file that contains an array of all fake requests. The file should look like the following example.
+The given filename should point to a YML file that contains an array of all fake requests. The file should look like
+the following example.
 
   -- # use a single dash here
     :http_method: "get"
