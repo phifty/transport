@@ -2,8 +2,8 @@
 
 Gem::Specification.new do |specification|
   specification.name                  = "transport"
-  specification.version               = "1.0.0"
-  specification.date                  = "2010-11-29"
+  specification.version               = "1.0.1"
+  specification.date                  = "2010-11-30"
 
   specification.authors               = [ "Philipp Brüll" ]
   specification.email                 = "b.phifty@gmail.com"
