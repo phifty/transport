@@ -36,14 +36,14 @@ module Transport
           @result = if @parameters.nil? || @parameters.empty?
             nil
           else
-            @quoted_parameters.collect do |key, value|
-              self.class.pair key, value
+            @quoted_parameters.keys.sort.map do |key|
+              self.class.pair key, @quoted_parameters[key]
             end.join("&")
           end
         end
 
         def self.escape(value)
-          value.is_a?(Array) ? value.map{ |element| CGI.escape element } : CGI.escape(value)
+          value.is_a?(Array) ? value.map{ |element| CGI.escape element.to_s } : CGI.escape(value.to_s)
         end
 
         def self.pair(key, value)

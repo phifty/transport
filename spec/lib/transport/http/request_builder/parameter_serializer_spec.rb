@@ -10,9 +10,9 @@ describe Transport::HTTP::RequestBuilder::ParameterSerializer do
   end
 
   it "should return a correctly encoded query string" do
-    serializer = described_class.new :foo => "bar", :test => [ "value1", "value2" ]
+    serializer = described_class.new :foo => "bar", :test => [ "value1", "value2", true ], :another_test => 5
     serializer.perform
-    serializer.result.should == "foo=bar&test=value1&test=value2"
+    serializer.result.should == "another_test=5&foo=bar&test=value1&test=value2&test=true"
   end
 
 end
