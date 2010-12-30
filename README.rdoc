@@ -107,3 +107,7 @@ defined in the YML file, it will raises a <tt>Transport::Spec::Faker::NoFakeRequ
 == Development
 
 This project is still under development. Any bug report and contribution is welcome!
+
+== Support
+
+Apart from contribution, support via Flattr[http://flattr.com/thing/108998/Transport] is welcome.
