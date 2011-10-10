@@ -1,8 +1,9 @@
 source :rubygems
 
 gem "rake"
+gem "json"
 
-group :development do
+group :test do
   gem "rspec"
   gem "reek"
 end
