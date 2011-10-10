@@ -4,6 +4,8 @@
 A HTTP/JSON transport layer. Provides a single command interface to perform http/json requests. A spec helper to
 perform request against a fake server is also included.
 
+{<img src="http://travis-ci.org/phifty/transport.png" />}[http://travis-ci.org/phifty/transport]
+
 == HTTP requests
 
 To perform a http request the call of a single command is needed.
