@@ -35,7 +35,10 @@ module Transport
       return unless expected_status_code
       response_code = @http_response.code.to_i
       response_body = @http_response.body
-      raise UnexpectedStatusCodeError.new(response_code, response_body) if expected_status_code.to_i != response_code
+      valid_status_code = [ expected_status_code ].flatten.compact.reduce(false) do |valid, status_code|
+        valid || status_code == response_code
+      end
+      raise UnexpectedStatusCodeError.new(response_code, response_body) unless valid_status_code
     end
 
   end

@@ -43,6 +43,13 @@ describe Transport::HTTP do
       end.should raise_error(Transport::UnexpectedStatusCodeError)
     end
 
+    it "should raise UnexpectedStatusCodeError if responded status code is a invalid one" do
+      @transport.options.merge! :expected_status_code => [ 201, 204 ]
+      lambda do
+        @transport.perform
+      end.should raise_error(Transport::UnexpectedStatusCodeError)
+    end
+
   end
 
   describe "response" do

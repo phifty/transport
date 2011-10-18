@@ -17,3 +17,15 @@ describe "fetch a search query result from google" do
   end
 
 end
+
+describe "fetch a search query result from google accepting multiple status codes" do
+
+  it "should return something" do
+    response = Transport::HTTP.request :get,
+                                       "http://www.google.de/search",
+                                       :parameters => { "q" => "transport" },
+                                       :expected_status_code => [ 200, 204 ]
+    response.should_not be_nil
+  end
+
+end
