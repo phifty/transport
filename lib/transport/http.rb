@@ -19,7 +19,8 @@ module Transport
     private
 
     def perform_request
-      @http_response = Net::HTTP.start(@uri.host, @uri.port) do |connection|
+      use_ssl = @uri.scheme == 'https'
+      @http_response = Net::HTTP.start(@uri.host, @uri.port, nil, nil, nil, nil, :use_ssl => use_ssl) do |connection|
         connection.request @request
       end
       @response = @http_response.body

@@ -5,7 +5,7 @@ require 'logger'
 describe Transport::HTTP do
 
   before :each do
-    @uri = mock URI, :host => "host", :port => 1234
+    @uri = mock URI, :host => "host", :port => 1234, :scheme => "http"
     @request = mock Net::HTTPRequest, :path => "/path"
     @logger = mock ::Logger, :info => nil
     @options = { :expected_status_code => 200, :logger => @logger }
@@ -21,9 +21,22 @@ describe Transport::HTTP do
 
   describe "perform" do
 
-    it "should perform the request" do
-      Net::HTTP.should_receive(:start).with("host", 1234).and_return(@response)
-      @transport.perform
+    context "when using HTTP scheme" do
+      it "should perform the request" do
+        Net::HTTP.should_receive(:start).with("host", 1234, nil, nil, nil, nil, { :use_ssl => false }).and_return(@response)
+        @transport.perform
+      end
+    end
+
+    context "when HTTPS scheme" do
+      before :each do
+        https_uri = mock URI, :host => "host", :port => 1234, :scheme => "https"
+        @transport = described_class.new https_uri, @request, @options
+      end
+      it "should perform the request" do
+        Net::HTTP.should_receive(:start).with("host", 1234, nil, nil, nil, nil, { :use_ssl => true }).and_return(@response)
+        @transport.perform
+      end
     end
 
     it "should initialize the formatter" do
