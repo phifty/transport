@@ -2,8 +2,8 @@
 
 Gem::Specification.new do |specification|
   specification.name                  = "transport"
-  specification.version               = "1.0.3"
-  specification.date                  = "2011-10-18"
+  specification.version               = "1.0.4"
+  specification.date                  = "2013-03-04"
 
   specification.authors               = [ "Philipp Brüll" ]
   specification.email                 = "b.phifty@gmail.com"
@@ -23,6 +23,7 @@ Gem::Specification.new do |specification|
 
   specification.requirements << "The 'json' gem if ruby version 1.8.x is used."
 
-  specification.add_development_dependency "rspec", ">= 2"
-  specification.add_development_dependency "reek", ">= 1.2"
+  specification.add_development_dependency "rspec", '~> 2.12'
+  specification.add_development_dependency "reek", "~> 1.3"
+  specification.add_development_dependency "rake", '~> 10.0'
 end
