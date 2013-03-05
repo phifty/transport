@@ -1,4 +1,5 @@
 require 'net/http'
+require 'openssl'
 require File.join(File.dirname(__FILE__), "common")
 
 module Transport

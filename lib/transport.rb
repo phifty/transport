@@ -1,4 +1,3 @@
-
 module Transport
 
   autoload :Common, File.join(File.dirname(__FILE__), "transport", "common")
