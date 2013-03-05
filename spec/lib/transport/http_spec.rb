@@ -22,9 +22,16 @@ describe Transport::HTTP do
   describe "perform" do
 
     context "when using HTTP scheme" do
-      it "should perform the request" do
-        Net::HTTP.should_receive(:start).with("host", 1234, nil, nil, nil, nil, { :use_ssl => false }).and_return(@response)
-        @transport.perform
+      if RUBY_VERSION < "1.9"
+        it "should perform the request" do
+          Net::HTTP.should_receive(:start).with("host", 1234).and_return(@response)
+          @transport.perform
+        end
+      else
+        it "should perform the request" do
+          Net::HTTP.should_receive(:start).with("host", 1234, anything()).and_return(@response)
+          @transport.perform
+        end
       end
     end
 
@@ -33,9 +40,20 @@ describe Transport::HTTP do
         https_uri = mock URI, :host => "host", :port => 1234, :scheme => "https"
         @transport = described_class.new https_uri, @request, @options
       end
-      it "should perform the request" do
-        Net::HTTP.should_receive(:start).with("host", 1234, nil, nil, nil, nil, { :use_ssl => true }).and_return(@response)
-        @transport.perform
+      if RUBY_VERSION < "1.9"
+        it "should perform the request" do
+          Net::HTTP.should_receive(:start).with("host", 1234).and_return(@response)
+          @transport.perform
+        end
+        it "should trigger a warning" do
+          @transport.should_receive(:warn).with("SSL not supported with this version of Ruby")
+          @transport.perform
+        end
+      else
+        it "should perform the request" do
+          Net::HTTP.should_receive(:start).with("host", 1234, { :use_ssl => true, :verify_mode => OpenSSL::SSL::VERIFY_NONE }).and_return(@response)
+          @transport.perform
+        end
       end
     end
 

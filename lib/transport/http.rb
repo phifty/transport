@@ -11,7 +11,11 @@ module Transport
     autoload :Formatter, File.join(File.dirname(__FILE__), "http", "formatter")
 
     def perform
-      perform_request
+      if RUBY_VERSION < "1.9"
+        perform_request_1_8
+      else
+        perform_request
+      end
       log_transport
       check_status_code
     end
@@ -20,7 +24,15 @@ module Transport
 
     def perform_request
       use_ssl = @uri.scheme == 'https'
-      @http_response = Net::HTTP.start(@uri.host, @uri.port, nil, nil, nil, nil, :use_ssl => use_ssl) do |connection|
+      @http_response = Net::HTTP.start(@uri.host, @uri.port, :use_ssl => use_ssl, :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |connection|
+        connection.request @request
+      end
+      @response = @http_response.body
+    end
+
+    def perform_request_1_8
+      warn "SSL not supported with this version of Ruby" if @uri.scheme == 'https'
+      @http_response = Net::HTTP.start(@uri.host, @uri.port) do |connection|
         connection.request @request
       end
       @response = @http_response.body
