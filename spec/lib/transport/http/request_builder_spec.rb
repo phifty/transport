@@ -79,11 +79,6 @@ describe Transport::HTTP::RequestBuilder do
           @request_builder.perform
         end
 
-        it "should not set the request body" do
-          @request.should_not_receive(:body=)
-          @request_builder.perform
-        end
-
       end
 
       describe "request" do
@@ -110,7 +105,7 @@ describe Transport::HTTP::RequestBuilder do
         it_should_behave_like "any http request builder perform"
 
         it "should initialize the request correctly" do
-          @request_class.should_receive(:new).with("/test", @options[:headers]).and_return(@request)
+          @request_class.should_receive(:new).with("/test?test_parameter=test", @options[:headers]).and_return(@request)
           @request_builder.perform
         end
 
